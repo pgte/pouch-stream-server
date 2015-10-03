@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('debug')('pouchdb-server-stream:stream');
+var debug = require('debug')('pouch-stream-server:stream');
 var TransformStream = require('stream').Transform;
 var stream = require('stream');
 var extend = require('xtend');
@@ -14,13 +14,13 @@ var defaults = {
 
 module.exports = Stream;
 
-function Stream(db, options) {
+function Stream(dbs, options) {
   if (! (this instanceof Stream)) {
-    return new Stream(db, options);
+    return new Stream(dbs, options);
   }
 
   var opts = extend({}, defaults, options);
-  this._db = db;
+  this._dbs = dbs;
 
   TransformStream.call(this, opts);
 }
@@ -30,19 +30,24 @@ inherits(Stream, TransformStream);
 Stream.prototype._transform = function _transform(data, enc, callback) {
   var stream = this;
   var seq = data.shift();
-  var db = data.shift();
-  var method = data.shift();
-  method = methodMap[method] || method;
-  var args = data.shift();
-
-  debug('db: %s, method: %s, args: %j', db, method, args);
-
-  args.push(cb);
-  var fn = this._db[method];
-  if (! fn || (typeof fn) != 'function') {
-    stream._sendReply(seq, new Error('No method named ' + method));
+  var dbName = data.shift();
+  var db = stream._dbs.find(dbName);
+  if (! db) {
+    stream._sendReply(seq, new Error('No database named ' + dbName));
   } else {
-    fn.apply(this._db, args);
+    var method = data.shift();
+    method = methodMap[method] || method;
+    var args = data.shift();
+
+    debug('db: %s, method: %s, args: %j', dbName, method, args);
+
+    args.push(cb);
+    var fn = db[method];
+    if (! fn || (typeof fn) != 'function') {
+      stream._sendReply(seq, new Error('No method named ' + method));
+    } else {
+      fn.apply(db, args);
+    }
   }
 
   function cb(err, result) {

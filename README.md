@@ -26,7 +26,7 @@ var server = PouchServerStream();
 
 // Add databases to it
 
-server.dbs.add(db);
+server.dbs.add('mydb', db);
 
 // Stream from and into it:
 
@@ -35,4 +35,4 @@ netServer.on('connection', function(conn) {
   stream.pipe(conn).pipe(stream);
 });
 
-``
+```
