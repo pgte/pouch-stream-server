@@ -23,7 +23,6 @@ describe('Wrapper', function() {
   });
 
   var server = PouchStreamServer();
-  server.dbs.add('mydb', serverDB)
 
   var remote = PouchRemoteStream();
 
@@ -40,6 +39,19 @@ describe('Wrapper', function() {
 
     clientStream.pipe(serverStream).
     pipe(clientStream);
+    done();
+  });
+
+  it('doesnt work if server does not know database', function(done) {
+    clientDB.post({a:1,b:2}, function(err, result) {
+      expect(err).to.not.be.null();
+      expect(err.message).to.equal('No database named mydb');
+      done();
+    });
+  });
+
+  it('allows you to add a database', function(done) {
+    server.dbs.add('mydb', serverDB)
     done();
   });
 
@@ -64,3 +76,5 @@ describe('Wrapper', function() {
   });
 
 });
+
+function xit(){}

@@ -49,10 +49,10 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
       fn.apply(db, args);
     }
   }
+  callback();
 
   function cb(err, result) {
     stream._sendReply(seq, err, result);
-    callback();
   }
 };
 
