@@ -1,0 +1,32 @@
+{
+  "name": "pouch-server-stream",
+  "version": "0.0.1",
+  "description": "PouchDB server stream",
+  "main": "index.js",
+  "scripts": {
+    "test": "lab tests/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pgte/pouch-server-stream.git"
+  },
+  "author": "pgte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pgte/pouch-server-stream/issues"
+  },
+  "homepage": "https://github.com/pgte/pouch-server-stream#readme",
+  "devDependencies": {
+    "async": "^1.4.2",
+    "code": "^1.5.0",
+    "lab": "^5.16.1",
+    "memdown": "^1.0.0",
+    "pouchdb": "^4.0.2",
+    "pouch-remote-stream": "*"
+  },
+  "dependencies": {
+    "debug": "^2.2.0",
+    "duplexify": "^3.4.2",
+    "xtend": "^4.0.0"
+  }
+}
