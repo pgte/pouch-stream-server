@@ -178,6 +178,53 @@ describe('Stream server', function() {
       ], done);
   });
 
+  it('can live sync 2 databases', function(done) {
+    var sync = clientDB.sync(newDB, {live: true});
+    async.series([
+      function(cb) {
+        // test in 1 direction
+        sync.on('change', function onChange(change) {
+          if (change.change.docs.length) {
+            delete change.change.docs[0]._rev;
+            expect(change.change.docs[0]).to.deep.equal({
+              i: 9,
+              _id: 'fromclientdb1'
+            });
+            sync.removeListener('change', onChange);
+            cb();
+          }
+        });
+
+        clientDB.put({_id: 'fromclientdb1', i: 9}, function(err) {
+          expect(err).to.be.null();
+        });
+      },
+      function(cb) {
+        // test in the other direction
+        sync.on('change', function onChange(change) {
+          if (change.change.docs.length) {
+            delete change.change.docs[0]._rev;
+            expect(change.change.docs[0]).to.deep.equal({
+              j: 10,
+              _id: 'fromnewdb1',
+            });
+            sync.removeListener('change', onChange);
+            cb();
+          }
+        });
+
+        newDB.put({_id: 'fromnewdb1', j: 10}, function(err) {
+          expect(err).to.be.null();
+        });
+      },
+      function(cb) {
+        // test cancelation
+        sync.cancel();
+        cb();
+      }
+      ], done);
+  });
+
 });
 
 function xit(){}

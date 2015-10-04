@@ -22,7 +22,7 @@
     "lab": "^5.16.1",
     "memdown": "^1.0.0",
     "pouchdb": "^4.0.2",
-    "pouch-remote-stream": "*"
+    "pouch-remote-stream": "0.0.1"
   },
   "dependencies": {
     "debug": "^2.2.0",
