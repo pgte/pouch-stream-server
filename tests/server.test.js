@@ -135,43 +135,47 @@ describe('Stream server', function() {
     });
   });
 
-  return;
+  it('can sync two databases', function(done) {
 
-  it('can replicate two databases', function(done) {
-    var firstResult = results[0];
-    var newDB = new PouchDB({
-      name: 'myotherdb',
-      db: require('memdown'),
-    });
-
-    newDB.post({c:3, d:4}, function(err, newResult) {
-      expect(err).to.be.null();
-
-      var changes = clientDB.sync(newDB);
-      console.log('syncing');
-      changes.once('complete', function() {
-        console.log('complete');
-        newDB.get(lastResult.id, function(err, doc) {
-          console.log('got last result', err, doc);
-          expect(err).to.be.null();
-          expect(result).to.be.an.object();
-          expect(result).to.deep.equal({
-            a:1, b:2, _id: firstResult.id, _rev: firstResult.rev
-          });
-
-          clientDB.get(newResult.id, function(err, result) {
-            expect(err).to.be.null();
-            expect(result).to.be.an.object();
-            expect(result).to.deep.equal({
-              c:3, d:4, _id: newResult.id, _rev: newResult.rev
-            });
-            done();
-          });
+    async.waterfall([
+      function(cb) {
+        newDB.post({e:5, f:6}, cb);
+      },
+      function(doc1, cb) {
+        clientDB.post({g: 7, h: 8}, function(err, doc2) {
+          cb(err, doc1, doc2);
         });
-      });
-    });
-
-
+      },
+      function(doc1, doc2, cb) {
+        var sync = clientDB.sync(newDB);
+        cb(null, doc1, doc2, sync);
+      },
+      function(doc1, doc2, sync, cb) {
+        sync.once('complete', function() {
+          cb(null, doc1, doc2);
+        });
+      },
+      function(doc1, doc2, cb) {
+        clientDB.get(doc1.id, function(err, syncedDoc) {
+          cb(err, syncedDoc, doc2);
+        });
+      },
+      function(syncedDoc, doc2, cb) {
+        expect(syncedDoc).to.be.an.object();
+        expect(syncedDoc.e).to.equal(5);
+        expect(syncedDoc.f).to.equal(6);
+        cb(null, doc2);
+      },
+      function(doc2, cb) {
+        newDB.get(doc2.id, cb);
+      },
+      function(syncedDoc, cb) {
+        expect(syncedDoc).to.be.an.object();
+        expect(syncedDoc.g).to.equal(7);
+        expect(syncedDoc.h).to.equal(8);
+        cb();
+      }
+      ], done);
   });
 
 });
