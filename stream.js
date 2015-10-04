@@ -7,6 +7,7 @@ var extend = require('xtend');
 var inherits = require('util').inherits;
 var duplexify = require('duplexify');
 var methodMap = require('./method-map');
+var methodWrapper = require('./method-wrap');
 
 var defaults = {
   objectMode: true
@@ -46,6 +47,10 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
     if (! fn || (typeof fn) != 'function') {
       stream._sendReply(seq, new Error('No method named ' + method));
     } else {
+      var wrapper = methodWrapper[method]
+      if (wrapper) {
+        fn = wrapper(fn, stream);
+      }
       fn.apply(db, args);
     }
   }
