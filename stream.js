@@ -2,7 +2,6 @@
 
 var debug = require('debug')('pouch-stream-server:stream');
 var TransformStream = require('stream').Transform;
-var stream = require('stream');
 var extend = require('xtend');
 var inherits = require('util').inherits;
 var methodMap = require('./method-map');
