@@ -28,30 +28,36 @@ inherits(Stream, TransformStream);
 
 Stream.prototype._transform = function _transform(data, enc, callback) {
   var stream = this;
-  var seq = data.shift();
-  var dbName = data.shift();
-  var db = stream._dbs.find(dbName);
-  if (! db) {
-    stream._sendReply(seq, new Error('No database named ' + dbName));
+
+  if (! Array.isArray(data)) {
+    stream._protocolError(new Error('require an array'));
     callback();
   } else {
-    var method = data.shift();
-    method = methodMap[method] || method;
-    var args = data.shift();
-
-    debug('db: %s, method: %s, args: %j', dbName, method, args);
-
-    args.push(cb);
-    var fn = db[method];
-    if (! fn || (typeof fn) != 'function') {
-      stream._sendReply(seq, new Error('No method named ' + method));
+    var seq = data.shift();
+    var dbName = data.shift();
+    var db = stream._dbs.find(dbName);
+    if (! db) {
+      stream._sendReply(seq, new Error('No database named ' + dbName));
       callback();
     } else {
-      var wrapper = methodWrapper[method];
-      if (wrapper) {
-        fn = wrapper(fn, stream);
+      var method = data.shift();
+      method = methodMap[method] || method;
+      var args = data.shift();
+
+      debug('db: %s, method: %s, args: %j', dbName, method, args);
+
+      args.push(cb);
+      var fn = db[method];
+      if (! fn || (typeof fn) != 'function') {
+        stream._sendReply(seq, new Error('No method named ' + method));
+        callback();
+      } else {
+        var wrapper = methodWrapper[method];
+        if (wrapper) {
+          fn = wrapper(fn, stream);
+        }
+        fn.apply(db, args);
       }
-      fn.apply(db, args);
     }
   }
 
@@ -63,4 +69,10 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
 
 Stream.prototype._sendReply = function _sendReply(seq, err, reply) {
   this.push([seq, [err, reply]]);
+};
+
+
+Stream.prototype._protocolError = function protocolError(err) {
+  this.push([-1, [{ message: err.message }]]);
+  this.push(null);
 };
