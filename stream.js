@@ -28,12 +28,13 @@ inherits(Stream, TransformStream);
 
 Stream.prototype._transform = function _transform(data, enc, callback) {
   var stream = this;
+  var seq;
 
   if (! Array.isArray(data)) {
     stream._protocolError(new Error('require an array'));
     callback();
   } else {
-    var seq = data.shift();
+    seq = data.shift();
     var dbName = data.shift();
     var db = stream._dbs.find(dbName);
     if (! db) {
@@ -48,7 +49,7 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
 
       args.push(cb);
       var fn = db[method];
-      if (! fn || (typeof fn) != 'function') {
+      if (! fn || (typeof fn) !== 'function') {
         stream._sendReply(seq, new Error('No method named ' + method));
         callback();
       } else {
