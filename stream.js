@@ -8,7 +8,7 @@ var methodMap = require('./method-map');
 var methodWrapper = require('./method-wrap');
 
 var defaults = {
-  objectMode: true
+  objectMode: true,
 };
 
 module.exports = Stream;
