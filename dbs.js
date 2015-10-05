@@ -1,3 +1,5 @@
+'use strict';
+
 var debug = require('debug')('pouch-stream-server:dbs');
 
 module.exports = function DBs() {
