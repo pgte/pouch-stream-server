@@ -4,25 +4,40 @@
   "description": "PouchDB stream server",
   "main": "index.js",
   "scripts": {
-    "test": "lab tests/*.js"
+    "test": "lab tests/*.js",
+    "style": "eslint .",
+    "coverage": "istanbul cover -- lab -l tests/*.js && istanbul check-coverage --statement 100 --branch 100 --function 100"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pgte/pouch-stream-server.git"
   },
-  "author": "pgte",
+  "maintainers": [
+    "pgte <i@pgte.me>"
+  ],
+  "contributors": [
+    "Pedro Teixeira <i@pgte.me> (https://github.com/pgte)"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pgte/pouch-stream-server/issues"
   },
   "homepage": "https://github.com/pgte/pouch-stream-server#readme",
   "devDependencies": {
+    "code": "^1.5.0",
+    "eslint": "^1.6.0",
+    "istanbul": "^0.3.21",
+    "lab": "^6.1.0",
+    "pouch-remote-stream": "0.0.1",
     "pouch-stream-tests": "0.0.1",
-    "pouch-remote-stream": "0.0.1"
+    "pre-commit": "^1.1.1"
   },
   "dependencies": {
     "debug": "^2.2.0",
-    "duplexify": "^3.4.2",
     "xtend": "^4.0.0"
-  }
+  },
+  "pre-commit": [
+    "style",
+    "coverage"
+  ]
 }
