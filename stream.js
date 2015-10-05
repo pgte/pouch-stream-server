@@ -5,7 +5,6 @@ var TransformStream = require('stream').Transform;
 var stream = require('stream');
 var extend = require('xtend');
 var inherits = require('util').inherits;
-var duplexify = require('duplexify');
 var methodMap = require('./method-map');
 var methodWrapper = require('./method-wrap');
 
