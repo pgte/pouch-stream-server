@@ -33,6 +33,7 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
   var db = stream._dbs.find(dbName);
   if (! db) {
     stream._sendReply(seq, new Error('No database named ' + dbName));
+    callback();
   } else {
     var method = data.shift();
     method = methodMap[method] || method;
@@ -44,18 +45,19 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
     var fn = db[method];
     if (! fn || (typeof fn) != 'function') {
       stream._sendReply(seq, new Error('No method named ' + method));
+      callback();
     } else {
-      var wrapper = methodWrapper[method]
+      var wrapper = methodWrapper[method];
       if (wrapper) {
         fn = wrapper(fn, stream);
       }
       fn.apply(db, args);
     }
   }
-  callback();
 
   function cb(err, result) {
     stream._sendReply(seq, err, result);
+    callback();
   }
 };
 
