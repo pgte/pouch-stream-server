@@ -68,7 +68,16 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
 };
 
 Stream.prototype._sendReply = function _sendReply(seq, err, reply) {
-  this.push([seq, [err, reply]]);
+  var error;
+  if (err) {
+    error = {
+      message: err.message,
+      status: err.status,
+      name: err.name,
+      error: err.error,
+    };
+  }
+  this.push([seq, [error, reply]]);
 };
 
 
