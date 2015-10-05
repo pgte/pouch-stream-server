@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
-  _bulkDocs: 'bulkDocs'
+  _bulkDocs: 'bulkDocs',
 };
