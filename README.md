@@ -2,7 +2,7 @@
 
 PouchDB stream server. Serves generic PouchDB object streams.
 
-Goes well with [`pouch-remote-stream`](https://github.com/pgte/pouch-remote-stream)-
+Goes well with [`pouch-remote-stream`](https://github.com/pgte/pouch-remote-stream) on the client.
 
 ## Install
 
