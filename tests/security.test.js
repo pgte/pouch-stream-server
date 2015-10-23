@@ -49,6 +49,7 @@ describe('Stream server', function() {
       server.dbs.add('somedb', db);
 
       var stream = server.stream();
+
       stream.once('data', function(d) {
         expect(d).to.deep.equal(
           [0,
