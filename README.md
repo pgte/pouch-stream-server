@@ -1,5 +1,8 @@
 # pouch-server-stream
 
+[![By](https://img.shields.io/badge/made%20by-yld!-32bbee.svg?style=flat)](http://yld.io/contact?source=github-nock)
+[![Build Status](https://secure.travis-ci.org/pgte/pouch-stream-server.svg)](http://travis-ci.org/pgte/pouch-stream-server)
+
 PouchDB stream server. Serves generic PouchDB object streams.
 
 Goes well with [`pouch-remote-stream`](https://github.com/pgte/pouch-remote-stream) on the client.
