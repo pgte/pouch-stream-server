@@ -74,6 +74,10 @@ Returns a stream to be used to talk to a remote client.
 `options` is an optional object with the following optional keys:
 
 * `highWaterMark`: The maximum number of objects to store in the internal buffer before ceasing to read from the underlying resource (when reading) or inducing back-pressure (when writing). Defaults to 16.
+* databases: Indication of which databases are allowed to use this stream. Defaults to any. Can be either:
+  * a string containing the name of the one allowed database
+  * an array of strings containing the names of the allowed databases
+  * a filter function that accepts the database name and returns a truthy value if the database is allowed to be used in this stream.
 
 # License
 

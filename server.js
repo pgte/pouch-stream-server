@@ -11,7 +11,12 @@ function Server(serverOptions) {
   return {
     dbs: dbs,
     stream: function createStream(options) {
-      return Stream(dbs, extend({}, serverOptions || {}, options));
+      var opts = options;
+      if (options && (Array.isArray(options) || (typeof options !== 'object'))) {
+        opts = { databases: options };
+      }
+
+      return Stream(dbs, extend({}, serverOptions || {}, opts));
     },
   };
 }

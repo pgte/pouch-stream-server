@@ -8,6 +8,7 @@ var methodMap = require('./method-map');
 var methodWrapper = require('./method-wrap');
 
 var defaults = {
+  databases: any,
   objectMode: true,
 };
 
@@ -20,6 +21,15 @@ function Stream(dbs, options) {
 
   var opts = extend({}, defaults, options);
   this._dbs = dbs;
+
+  if (typeof opts.databases !== 'function') {
+    if (!Array.isArray(opts.databases)) {
+      opts.databases = [opts.databases];
+    }
+
+    opts.databases = anyOf(opts.databases);
+  }
+  this._options = opts;
 
   TransformStream.call(this, opts);
 }
@@ -36,14 +46,17 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
   } else {
     seq = data.shift();
     var dbName = data.shift();
-    var db = stream._dbs.find(dbName);
+    var db;
+    if (this._options.databases(dbName)) {
+      db = stream._dbs.find(dbName);
+    }
     if (! db) {
-      stream._sendReply(seq, new Error('No database named ' + dbName));
+      stream._sendReply(seq, new Error('No allowed database named ' + dbName));
       callback();
     } else {
       var method = data.shift();
       method = methodMap[method] || method;
-      var args = data.shift();
+      var args = data.shift() || [];
 
       debug('db: %s, method: %s, args: %j', dbName, method, args);
 
@@ -86,3 +99,14 @@ Stream.prototype._protocolError = function protocolError(err) {
   this.push([-1, [{ message: err.message }]]);
   this.push(null);
 };
+
+
+function any() {
+  return true;
+}
+
+function anyOf(values) {
+  return function filter(val) {
+    return values.indexOf(val) >= 0;
+  };
+}
