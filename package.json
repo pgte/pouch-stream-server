@@ -28,6 +28,7 @@
     "eslint": "^1.6.0",
     "istanbul": "^0.3.21",
     "lab": "^6.1.0",
+    "memdown": "^1.1.0",
     "pouch-remote-stream": "0.1.0",
     "pouch-stream-tests": "0.1.0",
     "pouchdb": "^5.0.0",
