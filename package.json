@@ -1,6 +1,6 @@
 {
   "name": "pouch-stream-server",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "PouchDB stream server",
   "main": "index.js",
   "scripts": {
