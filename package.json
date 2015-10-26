@@ -31,7 +31,7 @@
     "memdown": "^1.1.0",
     "pouch-remote-stream": "0.1.0",
     "pouch-stream-tests": "0.1.1",
-    "pouchdb": "^5.0.0",
+    "pouchdb": "^4.0.3",
     "pre-commit": "^1.1.1"
   },
   "dependencies": {
