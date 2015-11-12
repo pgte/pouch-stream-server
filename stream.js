@@ -19,6 +19,8 @@ function Stream(dbs, options) {
     return new Stream(dbs, options);
   }
 
+  debug('new stream');
+
   var opts = extend({}, defaults, options);
   this._dbs = dbs;
 
@@ -32,6 +34,12 @@ function Stream(dbs, options) {
   this._options = opts;
 
   TransformStream.call(this, opts);
+
+  this.setMaxListeners(Infinity);
+
+  this.once('end', function onceEnd() {
+    debug('stream ended');
+  });
 }
 
 inherits(Stream, TransformStream);
@@ -84,6 +92,7 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
 Stream.prototype._sendReply = function _sendReply(seq, err, reply) {
   var error;
   if (err) {
+    debug('replying with error: %j', err.message);
     error = {
       message: err.message,
       status: err.status,
@@ -96,6 +105,7 @@ Stream.prototype._sendReply = function _sendReply(seq, err, reply) {
 
 
 Stream.prototype._protocolError = function protocolError(err) {
+  debug('protocol error', err.stack);
   this.push([-1, [{ message: err.message }]]);
   this.push(null);
 };

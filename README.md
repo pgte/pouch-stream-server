@@ -1,4 +1,4 @@
-# pouch-server-stream
+# pouch-stream-server
 
 [![By](https://img.shields.io/badge/made%20by-yld!-32bbee.svg?style=flat)](http://yld.io/contact?source=github-nock)
 [![Build Status](https://secure.travis-ci.org/pgte/pouch-stream-server.svg)](http://travis-ci.org/pgte/pouch-stream-server)
@@ -6,6 +6,10 @@
 PouchDB stream server. Serves generic PouchDB object streams.
 
 Goes well with [`pouch-remote-stream`](https://github.com/pgte/pouch-remote-stream) on the client.
+
+## PouchDB
+
+For now, it' only works with PouchDB v4.0. Compatibility with the new PouchDB v5 is being developed on [this branch](https://github.com/pgte/pouch-stream-server/tree/pouchdb-5)
 
 ## Install
 
