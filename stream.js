@@ -19,6 +19,8 @@ function Stream(dbs, options) {
     return new Stream(dbs, options);
   }
 
+  debug('new stream');
+
   var opts = extend({}, defaults, options);
   this._dbs = dbs;
 
@@ -32,6 +34,10 @@ function Stream(dbs, options) {
   this._options = opts;
 
   TransformStream.call(this, opts);
+
+  this.once('end', function() {
+    debug('stream ended');
+  });
 }
 
 inherits(Stream, TransformStream);
@@ -63,6 +69,7 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
       args.push(cb);
       var fn = db[method];
       if (! fn || (typeof fn) !== 'function') {
+        console.log(fn);
         stream._sendReply(seq, new Error('No method named ' + method));
         callback();
       } else {
@@ -84,6 +91,7 @@ Stream.prototype._transform = function _transform(data, enc, callback) {
 Stream.prototype._sendReply = function _sendReply(seq, err, reply) {
   var error;
   if (err) {
+    debug('replying with error: %j', err.message || err);
     error = {
       message: err.message,
       status: err.status,
@@ -91,11 +99,14 @@ Stream.prototype._sendReply = function _sendReply(seq, err, reply) {
       error: err.error,
     };
   }
-  this.push([seq, [error, reply]]);
+  var reply = [seq, [error, reply]];
+  debug('replying %j', reply);
+  this.push(reply);
 };
 
 
 Stream.prototype._protocolError = function protocolError(err) {
+  debug('protocol error', err.stack);
   this.push([-1, [{ message: err.message }]]);
   this.push(null);
 };
