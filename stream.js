@@ -35,9 +35,12 @@ function Stream(dbs, options) {
 
   TransformStream.call(this, opts);
 
+  this.setMaxListeners(Infinity);
+
   this.once('end', function() {
     debug('stream ended');
   });
+
 }
 
 inherits(Stream, TransformStream);
