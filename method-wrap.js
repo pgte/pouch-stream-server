@@ -13,10 +13,16 @@ function _changes(fn, stream) {
 
     var changes = db.changes(options);
     CHANGE_EVENTS.forEach(function eachChangeEvent(event) {
-      changes.on(event, function onEvent(payload) {
+      changes.on(event, onEvent);
+
+      stream.once('finish', function() {
+        changes.removeListener(event, onEvent);
+      });
+
+      function onEvent(payload) {
         debug('event %s (%j)', event, payload);
         stream.push(['_event', event, [listener, payload]]);
-      });
+      }
     });
     cb();
   };
