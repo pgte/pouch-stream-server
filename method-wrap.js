@@ -16,7 +16,9 @@ function _changes(fn, stream) {
       changes.on(event, onEvent);
 
       stream.once('finish', function onceFinish() {
+        debug('stream finished');
         changes.removeListener(event, onEvent);
+        changes.cancel();
       });
 
       function onEvent(payload) {
